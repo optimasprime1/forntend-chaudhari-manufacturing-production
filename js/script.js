@@ -119,11 +119,13 @@ function normalizeProduct(product) {
 
 function resolveProductImage(product, category) {
   const categoryText = String(category || '').toLowerCase();
-  const fallback = categoryText.includes('almond')
-    ? 'assets/images/8e8a6a35-9a85-4e10-8095-39afca0647a9.png'
-    : categoryText.includes('betelnut') || categoryText.includes('supari')
-      ? 'assets/images/947418eb-9873-41ce-8302-8c2256c72f1d.png'
-      : 'assets/images/5c1abfb5-9577-4a7b-94a6-26ca39982110.png';
+  if (categoryText.includes('almond')) {
+    return 'assets/images/c851ab6b-2632-4e07-a13e-5287578ddd9e.jpg';
+  }
+
+  const fallback = categoryText.includes('betelnut') || categoryText.includes('supari')
+    ? 'assets/images/947418eb-9873-41ce-8302-8c2256c72f1d.png'
+    : 'assets/images/5c1abfb5-9577-4a7b-94a6-26ca39982110.png';
   const image = product.image || product.featuredImage || product.image_url;
   if (typeof image !== 'string' || !image) return fallback;
   if (/^https?:\/\//i.test(image)) return image;
@@ -131,7 +133,7 @@ function resolveProductImage(product, category) {
   const fileName = image.replace(/\\/g, '/').split('/').pop();
   const localImages = new Set([
     '947418eb-9873-41ce-8302-8c2256c72f1d.png',
-    '8e8a6a35-9a85-4e10-8095-39afca0647a9.png',
+    'c851ab6b-2632-4e07-a13e-5287578ddd9e.jpg',
     '5c1abfb5-9577-4a7b-94a6-26ca39982110.png'
   ]);
   return localImages.has(fileName)
