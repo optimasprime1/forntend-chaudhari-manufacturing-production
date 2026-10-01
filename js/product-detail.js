@@ -129,6 +129,10 @@ function findSpecificationValue(keys, product, specifications) {
 }
 
 function resolveProductImage(product) {
+  if (isAlmondProduct(product)) {
+    return 'assets/images/c851ab6b-2632-4e07-a13e-5287578ddd9e.jpg';
+  }
+
   const modelImages = {
     CRL01: 'assets/images/03196af5-1ff4-436a-9618-dd7680ef54bf.png',
     KRY10: 'assets/images/4a4a47d9-373b-49be-886a-3ea266f3357c.png',
@@ -146,10 +150,21 @@ function resolveProductImage(product) {
   const fileName = image.replace(/\\/g, '/').split('/').pop();
   const localImages = new Set([
     '947418eb-9873-41ce-8302-8c2256c72f1d.png',
-    '8e8a6a35-9a85-4e10-8095-39afca0647a9.png',
+    'c851ab6b-2632-4e07-a13e-5287578ddd9e.jpg',
     '5c1abfb5-9577-4a7b-94a6-26ca39982110.png'
   ]);
   return localImages.has(fileName) ? `assets/images/${fileName}` : fallback;
+}
+
+function isAlmondProduct(product) {
+  const category = [
+    product.category && typeof product.category === 'object'
+      ? product.category.name || product.category.categoryName || product.category.categoryId
+      : product.category,
+    product.categoryId,
+    product.categoryName
+  ].filter(Boolean).join(' ').toLowerCase();
+  return category.includes('almond');
 }
 
 function fallbackProductImage(product) {
@@ -161,7 +176,7 @@ function fallbackProductImage(product) {
     product.categoryName
   ].filter(Boolean).join(' ').toLowerCase();
   const fallback = category.includes('almond')
-    ? 'assets/images/8e8a6a35-9a85-4e10-8095-39afca0647a9.png'
+    ? 'assets/images/c851ab6b-2632-4e07-a13e-5287578ddd9e.jpg'
     : category.includes('betelnut') || category.includes('supari')
       ? 'assets/images/947418eb-9873-41ce-8302-8c2256c72f1d.png'
       : 'assets/images/5c1abfb5-9577-4a7b-94a6-26ca39982110.png';
