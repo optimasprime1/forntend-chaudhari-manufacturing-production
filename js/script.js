@@ -3,6 +3,11 @@ let products = [];
 let productLoadError = null;
 const WHATSAPP_NUMBER = '919033720758';
 
+document.addEventListener('copy', event => {
+  if (event.target instanceof Element && event.target.closest('input, textarea, [contenteditable]')) return;
+  event.preventDefault();
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   const t = document.querySelector('.menu-toggle'), n = document.querySelector('.nav-links');
   if (t) t.onclick = () => n.classList.toggle('show');
