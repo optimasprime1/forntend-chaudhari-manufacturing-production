@@ -59,6 +59,10 @@ svg {
     display: flex;
   }
 
+  .nav-links.show a:not(.quote-btn) {
+    display: block;
+  }
+
   .navbar {
     min-width: 0;
   }
@@ -117,15 +121,50 @@ svg {
     height: 72px;
     padding-right: 5%;
     padding-left: 5%;
+    gap: 8px;
+  }
+
+  .navbar .brand-logo {
+    width: 44px;
+    height: 44px;
   }
 
   .brand img {
-    width: 64px;
-    height: 64px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .navbar .menu-toggle {
+    display: none;
+  }
+
+  .navbar .nav-links {
+    position: static;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: flex-end;
+    flex-direction: row;
+    gap: clamp(4px, 1.5vw, 10px);
+    min-width: 0;
+    padding: 0;
+    background: transparent;
+  }
+
+  .navbar .nav-links a:not(.quote-btn) {
+    display: block;
+    font-size: clamp(7px, 2.4vw, 10px);
+    white-space: nowrap;
+  }
+
+  .navbar .nav-links a + a {
+    margin-left: clamp(3px, 1vw, 6px);
+    padding-left: clamp(4px, 1.2vw, 7px);
+    border-left: 1px solid rgba(255, 255, 255, .35);
   }
 
   .nav-links {
-    top: 72px;
+    top: auto;
   }
 
   .section {
