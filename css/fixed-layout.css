@@ -4,6 +4,19 @@ svg {
   max-width: 100%;
 }
 
+body {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input,
+textarea,
+[contenteditable="true"],
+[contenteditable=""] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 .section > .split,
 .section > .capability-grid,
 .section > .cert-grid,
@@ -125,13 +138,13 @@ svg {
   }
 
   .navbar .brand-logo {
-    width: 70px;
-    height: 70px;
+    width: 44px;
+    height: 44px;
   }
 
   .brand img {
-    width: 70px;
-    height: 70px;
+    width: 44px;
+    height: 44px;
   }
 
   .navbar .menu-toggle {
