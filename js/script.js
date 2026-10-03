@@ -120,7 +120,7 @@ function normalizeProduct(product) {
 function resolveProductImage(product, category) {
   const categoryText = String(category || '').toLowerCase();
   if (categoryText.includes('almond')) {
-    return 'assets/images/c851ab6b-2632-4e07-a13e-5287578ddd9e.jpg';
+    return 'assets/images/de5fbc53-f5bd-45a6-adb1-28283e892226.png';
   }
 
   const fallback = categoryText.includes('betelnut') || categoryText.includes('supari')
@@ -133,7 +133,7 @@ function resolveProductImage(product, category) {
   const fileName = image.replace(/\\/g, '/').split('/').pop();
   const localImages = new Set([
     '947418eb-9873-41ce-8302-8c2256c72f1d.png',
-    'c851ab6b-2632-4e07-a13e-5287578ddd9e.jpg',
+    'de5fbc53-f5bd-45a6-adb1-28283e892226.png',
     '5c1abfb5-9577-4a7b-94a6-26ca39982110.png'
   ]);
   return localImages.has(fileName)
@@ -196,11 +196,19 @@ function escapeHtml(value) {
   }[character]));
 }
 
-function render(items) {
-  let list = document.getElementById('productList'), no = document.getElementById('noResults');
+function render(items, searchTerm = '') {
+  const list = document.getElementById('productList');
+  const no = document.getElementById('noResults');
+  const noResultsMessage = document.getElementById('noResultsMessage');
+  const noResultsSearchMessage = document.getElementById('noResultsSearchMessage');
+  const noResultsQuery = document.getElementById('noResultsQuery');
+  const noResultsIcon = no.querySelector('.no-results-icon');
   if (productLoadError) {
     list.innerHTML = '';
-    no.textContent = 'Products could not be loaded. Please check that the backend is running.';
+    noResultsMessage.textContent = 'Products could not be loaded. Please check that the backend is running.';
+    noResultsMessage.hidden = false;
+    noResultsSearchMessage.hidden = true;
+    noResultsIcon.hidden = true;
     no.style.display = 'block';
     return;
   }
@@ -219,7 +227,12 @@ function render(items) {
       </div>
     </article>
   `).join('');
-  no.textContent = 'No products found. Try another search.';
+  const hasSearchTerm = Boolean(searchTerm.trim());
+  noResultsMessage.textContent = 'No products found. Try another search.';
+  noResultsQuery.textContent = `“${searchTerm.trim()}”`;
+  noResultsMessage.hidden = items.length > 0 || hasSearchTerm;
+  noResultsSearchMessage.hidden = items.length > 0 || !hasSearchTerm;
+  noResultsIcon.hidden = items.length > 0 || !hasSearchTerm;
   no.style.display = items.length ? 'none' : 'block';
 }
 
@@ -250,8 +263,9 @@ function catalog() {
   });
   search.oninput = apply;
   function apply() {
-    let q = search.value.toLowerCase();
-    render(products.filter(p => (cat === 'all' || p.category.toLowerCase() === cat.toLowerCase()) && (`${p.name} ${p.model || ''} ${p.productId || ''} ${p.category} ${p.keywords || ''}`).toLowerCase().includes(q)));
+    const query = search.value.trim();
+    const q = query.toLowerCase();
+    render(products.filter(p => (cat === 'all' || p.category.toLowerCase() === cat.toLowerCase()) && (`${p.name} ${p.model || ''} ${p.productId || ''} ${p.category} ${p.keywords || ''}`).toLowerCase().includes(q)), query);
   }
 }
 
@@ -270,7 +284,10 @@ document.addEventListener('click', e => {
 
 // ---- Enquiry form (WhatsApp) ----
 function formSetup() {
-  let form = document.getElementById('enquiryForm'), sel = document.getElementById('product');
+  const form = document.getElementById('enquiryForm');
+  const productField = document.getElementById('product');
+  const productToggle = document.getElementById('productToggle');
+  const productOptions = document.getElementById('productOptions');
   setupLocationAutocomplete();
 
   // Populate the product dropdown from the backend so it always matches
@@ -279,24 +296,73 @@ function formSetup() {
     .then(res => res.ok ? res.json() : Promise.reject(res))
     .then(body => {
       const list = body.data || body;
-      list.forEach(p => sel.insertAdjacentHTML('beforeend', `<option value="${p.name}">${p.name}</option>`));
-      const pre = new URLSearchParams(location.search).get('product');
-      if (pre) sel.value = pre;
+      const preselectedProduct = new URLSearchParams(location.search).get('product');
+      list.forEach(p => {
+        const optionLabel = document.createElement('label');
+        optionLabel.className = 'product-option';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = p.name;
+        checkbox.checked = p.name === preselectedProduct;
+
+        const optionName = document.createElement('span');
+        optionName.textContent = p.name;
+
+        optionLabel.append(checkbox, optionName);
+        productOptions.appendChild(optionLabel);
+      });
+      updateProductSelection();
     })
     .catch(err => console.error('Could not load product list for enquiry form.', err));
+
+  productToggle.addEventListener('click', () => {
+    const isExpanded = productToggle.getAttribute('aria-expanded') === 'true';
+    productToggle.setAttribute('aria-expanded', String(!isExpanded));
+    productOptions.hidden = isExpanded;
+  });
+  productOptions.addEventListener('change', event => {
+    if (!(event.target instanceof HTMLInputElement) || event.target.type !== 'checkbox') return;
+    updateProductSelection();
+    productOptions.hidden = true;
+    productToggle.setAttribute('aria-expanded', 'false');
+    productToggle.focus();
+  });
+  document.addEventListener('click', event => {
+    if (event.target instanceof Node && !productField.contains(event.target)) {
+      productOptions.hidden = true;
+      productToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+  productField.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      productOptions.hidden = true;
+      productToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  function updateProductSelection() {
+    const selected = productOptions.querySelectorAll('input[type="checkbox"]:checked');
+    productToggle.textContent = selected.length
+      ? `${selected.length} product${selected.length === 1 ? '' : 's'} selected`
+      : 'Choose products';
+  }
 
   form.onsubmit = e => {
     e.preventDefault();
     let ok = true;
     const checks = [
-      ['name', v => v.trim().length > 1, 'Please enter your full name.'],
-      ['phone', v => /^[0-9+\-\s()]{7,20}$/.test(v), 'Please enter a valid phone number.'],
-      ['product', v => v !== '', 'Please select a product.'],
-      ['message', v => v.trim().length >= 5, 'Please describe your requirements.']
+      ['name', field => field.value.trim().length > 1, 'Please enter your full name.'],
+      ['phone', field => /^[0-9+\-\s()]{7,20}$/.test(field.value), 'Please enter a valid phone number.'],
+      ['product', field => field.querySelector('input[type="checkbox"]:checked') !== null, 'Please select at least one product.'],
+      ['message', field => field.value.trim().length >= 5, 'Please describe your requirements.']
     ];
     checks.forEach(([id, test, msg]) => {
-      let x = document.getElementById(id), er = x.parentElement.querySelector('.error');
-      if (!test(x.value)) { er.textContent = msg; ok = false; } else er.textContent = '';
+      const x = document.getElementById(id);
+      const er = id === 'product'
+        ? x.querySelector('.error')
+        : x.parentElement.querySelector('.error');
+      if (!test(x)) { er.textContent = msg; ok = false; } else er.textContent = '';
     });
     if (!ok) return;
 
@@ -304,7 +370,9 @@ function formSetup() {
     const phone = document.getElementById('phone').value.trim();
     const email = document.getElementById('email').value.trim();
     const userLocation = document.getElementById('location').value.trim();
-    const product = document.getElementById('product').value.trim();
+    const selectedProducts = Array.from(productOptions.querySelectorAll('input[type="checkbox"]:checked'))
+      .map(checkbox => checkbox.value.trim())
+      .filter(Boolean);
     const message = document.getElementById('message').value.trim();
     const whatsappMessage = `New Website Enquiry
 
@@ -312,7 +380,7 @@ Name: ${name}
 Phone: ${phone}
 Email: ${email}
 Location: ${userLocation || 'Not provided'}
-Product: ${product}
+Products: ${selectedProducts.join(', ')}
 
 Message:
 ${message}`;
@@ -340,7 +408,9 @@ async function setupLocationAutocomplete() {
   };
 
   if (!apiKey) {
-    useManualLocation('Location suggestions are unavailable. You can enter your city or area manually.');
+    container.hidden = true;
+    input.hidden = false;
+    hint.hidden = true;
     return;
   }
 
