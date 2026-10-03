@@ -36,9 +36,15 @@
                 <input id="location" type="text" autocomplete="address-level2"
                     placeholder="Enter your city or area">
                 <small id="locationHint" class="location-hint" hidden></small>
-                <small class="error"></small></label><label>Select Product<select id="product" required>
-                    <option value="">Choose a product</option>
-                </select><small class="error"></small></label><label>Message / Requirements<textarea id="message"
+                <small class="error"></small></label><div class="product-field"><label for="productToggle">Select Product</label>
+                <div id="product" class="product-multiselect">
+                    <button id="productToggle" class="product-multiselect-toggle" type="button"
+                        aria-expanded="false" aria-controls="productOptions">Choose products</button>
+                    <div id="productOptions" class="product-options" role="group"
+                        aria-label="Available products" hidden></div>
+                </div>
+                <small id="productSelectionHint" class="location-hint">Choose one or more products. The list closes after each selection.</small>
+                <small class="error"></small></div><label>Message / Requirements<textarea id="message"
                     rows="6" required placeholder="Tell us about your requirements..."></textarea><small
                     class="error"></small></label><button class="btn btn-primary submit-btn" type="submit">Submit
                 Enquiry</button>
