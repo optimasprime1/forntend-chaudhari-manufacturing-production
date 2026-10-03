@@ -30,7 +30,16 @@
                     data-category="Processing">Processing</button></div>
         </div>
         <div id="productList" class="catalog-grid"></div>
-        <p id="noResults" class="no-results">No products found. Try another search.</p>
+        <div id="noResults" class="no-results" role="status" aria-live="polite">
+            <svg class="no-results-icon" aria-hidden="true" viewBox="0 0 48 48" fill="none"
+                stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                <circle cx="21" cy="21" r="13"></circle>
+                <path d="m31 31 11 11"></path>
+            </svg>
+            <p id="noResultsMessage">No products found. Try another search.</p>
+            <p id="noResultsSearchMessage" hidden>We couldn't find any products matching <strong
+                    id="noResultsQuery"></strong>.</p>
+        </div>
     </section>
     <div id="productModal" class="modal">
         <div class="modal-content"><button class="modal-close">×</button>
