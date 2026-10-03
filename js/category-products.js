@@ -66,7 +66,7 @@ function resolveCategoryImage(product) {
     product.categoryName
   ].filter(Boolean).join(' ').toLowerCase();
   if (category.includes('almond')) {
-    return 'assets/images/c851ab6b-2632-4e07-a13e-5287578ddd9e.jpg';
+    return 'assets/images/de5fbc53-f5bd-45a6-adb1-28283e892226.png';
   }
 
   const fallback = 'assets/images/947418eb-9873-41ce-8302-8c2256c72f1d.png';
@@ -77,7 +77,7 @@ function resolveCategoryImage(product) {
   const fileName = image.replace(/\\/g, '/').split('/').pop();
   const localImages = new Set([
     '947418eb-9873-41ce-8302-8c2256c72f1d.png',
-    'c851ab6b-2632-4e07-a13e-5287578ddd9e.jpg'
+    'de5fbc53-f5bd-45a6-adb1-28283e892226.png'
   ]);
   return localImages.has(fileName) ? `assets/images/${fileName}` : fallback;
 }
