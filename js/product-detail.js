@@ -130,7 +130,7 @@ function findSpecificationValue(keys, product, specifications) {
 
 function resolveProductImage(product) {
   if (isAlmondProduct(product)) {
-    return 'assets/images/c851ab6b-2632-4e07-a13e-5287578ddd9e.jpg';
+    return 'assets/images/de5fbc53-f5bd-45a6-adb1-28283e892226.png';
   }
 
   const modelImages = {
@@ -150,7 +150,7 @@ function resolveProductImage(product) {
   const fileName = image.replace(/\\/g, '/').split('/').pop();
   const localImages = new Set([
     '947418eb-9873-41ce-8302-8c2256c72f1d.png',
-    'c851ab6b-2632-4e07-a13e-5287578ddd9e.jpg',
+    'de5fbc53-f5bd-45a6-adb1-28283e892226.png',
     '5c1abfb5-9577-4a7b-94a6-26ca39982110.png'
   ]);
   return localImages.has(fileName) ? `assets/images/${fileName}` : fallback;
@@ -176,7 +176,7 @@ function fallbackProductImage(product) {
     product.categoryName
   ].filter(Boolean).join(' ').toLowerCase();
   const fallback = category.includes('almond')
-    ? 'assets/images/c851ab6b-2632-4e07-a13e-5287578ddd9e.jpg'
+    ? 'assets/images/de5fbc53-f5bd-45a6-adb1-28283e892226.png'
     : category.includes('betelnut') || category.includes('supari')
       ? 'assets/images/947418eb-9873-41ce-8302-8c2256c72f1d.png'
       : 'assets/images/5c1abfb5-9577-4a7b-94a6-26ca39982110.png';
